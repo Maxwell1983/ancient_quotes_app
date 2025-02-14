@@ -1,4 +1,4 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuoteData {
   final String text;
@@ -16,16 +16,18 @@ class QuoteData {
     return {
       'text': text,
       'author': author,
-      'date': date.toIso8601String(),
+      'date': date.toIso8601String(), // Always store date as ISO string
     };
   }
 
-  // Factory constructor to create QuoteData from JSON
+  // ✅ FIX: Handle Firestore Timestamps correctly
   factory QuoteData.fromJson(Map<String, dynamic> json) {
     return QuoteData(
-      text: json['text'],
-      author: json['author'],
-      date: DateTime.parse(json['date']),
+      text: json['text'] ?? "Unknown Quote",  // Prevent null errors
+      author: json['author'] ?? "Unknown Author",
+      date: json['date'] is Timestamp
+          ? (json['date'] as Timestamp).toDate() // Convert Firestore Timestamp
+          : DateTime.tryParse(json['date'] ?? "") ?? DateTime.now(),
     );
   }
 }

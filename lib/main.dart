@@ -4,6 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:ancient_quotes_app/controller/quote_provider.dart';
 import 'package:ancient_quotes_app/firebase_options.dart';
 import 'package:ancient_quotes_app/views/home_screen.dart';
+import 'package:ancient_quotes_app/controller/persistence/firestore.dart';
+import 'package:ancient_quotes_app/models/quote_data.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,8 +15,13 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Initialize QuoteProvider and fetch quotes on startup
+  QuoteProvider quoteProvider = QuoteProvider();
+  await quoteProvider.fetchQuotes(); // 🚀 Ensure Firestore gets populated
+
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
